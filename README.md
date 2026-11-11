@@ -1,64 +1,65 @@
 # Todo List API
 
-![Node.js](https://img.shields.io/badge/Node.js-18%2B-339933?logo=nodedotjs&logoColor=white)
-![Express](https://img.shields.io/badge/Express-5.x-000000?logo=express&logoColor=white)
-![MongoDB](https://img.shields.io/badge/MongoDB-Mongoose-47A248?logo=mongodb&logoColor=white)
-![Testing](https://img.shields.io/badge/Testing-Jest%20%26%20Supertest-C21325?logo=jest&logoColor=white)
-
-REST API untuk mengelola daftar tugas (*Todo List*) menggunakan Node.js, Express.js, dan MongoDB. Project ini menyediakan autentikasi JWT, operasi CRUD Todo, pencatatan aktivitas, endpoint statistik, serta dokumentasi API interaktif melalui Swagger UI.
+REST API untuk mengelola daftar tugas (todo) yang dibangun menggunakan **Node.js**, **Express.js**, dan **MongoDB**. API ini menyediakan autentikasi JWT, pengelolaan todo, pencatatan aktivitas pengguna (activity logs), endpoint statistik yang dilindungi API Key, serta dokumentasi interaktif menggunakan Swagger UI.
 
 ## Daftar Isi
 
 - [Fitur](#fitur)
-- [Teknologi yang Dipakai](#teknologi-yang-dipakai)
-- [Struktur Project](#struktur-project)
-- [Persyaratan](#persyaratan)
+- [Teknologi](#teknologi)
+- [Struktur Folder](#struktur-folder)
 - [Instalasi](#instalasi)
 - [Environment Variables](#environment-variables)
-- [Menjalankan Project](#menjalankan-project)
-- [Menjalankan Test](#menjalankan-test)
+- [Menjalankan Aplikasi](#menjalankan-aplikasi)
 - [Dokumentasi API](#dokumentasi-api)
-- [Referensi Endpoint](#referensi-endpoint)
+- [Ringkasan Endpoint](#ringkasan-endpoint)
+- [Parameter Todo](#parameter-todo)
 - [Contoh Penggunaan](#contoh-penggunaan)
+- [Format Response dan Kode Status](#format-response-dan-kode-status)
+- [Keamanan](#keamanan)
+- [Pengujian](#pengujian)
+- [Pembuat](#pembuat)
 - [Lisensi](#lisensi)
 
 ## Fitur
 
-- Registrasi dan login pengguna.
-- Autentikasi menggunakan JSON Web Token (JWT).
-- Password pengguna di-hash menggunakan bcryptjs.
-- CRUD Todo: membuat, melihat, memperbarui, dan menghapus tugas.
-- Setiap pengguna dapat mengakses Todo miliknya; role `admin` memiliki akses daftar Todo lintas pengguna.
-- Pagination, filtering berdasarkan status selesai, sorting, dan pencarian Todo.
-- Pencatatan aktivitas ketika Todo dibuat, diperbarui, atau dihapus.
-- Endpoint riwayat aktivitas pengguna.
-- Endpoint ringkasan statistik yang dilindungi API Key.
-- Validasi input menggunakan express-validator.
-- Global error handling dan middleware pencatatan request.
-- Dokumentasi API interaktif menggunakan Swagger UI.
-- Automated testing menggunakan Jest, Supertest, dan mongodb-memory-server.
+- **Autentikasi pengguna:** registrasi dan login menggunakan JSON Web Token (JWT).
+- **Manajemen todo:** membuat, melihat, mengubah, dan menghapus todo.
+- **Kepemilikan data:** pengguna dapat mengelola todo miliknya sendiri.
+- **Role pengguna:** mendukung role `user` dan `admin`.
+- **Pagination:** membagi daftar todo ke dalam beberapa halaman.
+- **Filtering:** memfilter todo berdasarkan status selesai atau belum selesai.
+- **Sorting:** mengurutkan todo berdasarkan waktu dibuat, judul, atau status.
+- **Pencarian:** mencari todo berdasarkan judul dan deskripsi.
+- **Activity logs:** mencatat aktivitas pembuatan, perubahan, dan penghapusan todo.
+- **Statistik:** menyediakan ringkasan jumlah todo, todo selesai, todo belum selesai, dan total activity logs.
+- **API Key:** melindungi endpoint statistik menggunakan header `x-api-key`.
+- **Validasi input:** memvalidasi data request menggunakan Express Validator.
+- **Dokumentasi API:** menyediakan dokumentasi interaktif melalui Swagger UI.
+- **Automated testing:** pengujian otomatis menggunakan Jest dan Supertest.
 
-## Teknologi yang Dipakai
+## Teknologi
 
-| Kategori | Teknologi |
-| --- | --- |
+| Kebutuhan | Teknologi |
+|---|---|
 | Runtime | Node.js |
-| Framework | Express.js 5 |
+| Framework | Express 5 |
 | Database | MongoDB |
 | ODM | Mongoose |
-| Autentikasi | JSON Web Token (jsonwebtoken) |
+| Autentikasi | JSON Web Token (`jsonwebtoken`) |
 | Password hashing | bcryptjs |
 | Validasi | express-validator |
 | Dokumentasi API | swagger-jsdoc, swagger-ui-express |
-| Testing | Jest, Supertest, mongodb-memory-server |
-| Development | Nodemon |
+| Pengujian | Jest, Supertest, mongodb-memory-server |
 | Environment configuration | dotenv |
+| Development | nodemon |
 
-## Struktur Project
+## Struktur Folder
 
 ```text
 todo-api/
 ├── src/
+│   ├── app.js
+│   ├── server.js
 │   ├── config/
 │   │   ├── db.js
 │   │   └── swagger.js
@@ -91,10 +92,8 @@ todo-api/
 │   ├── utils/
 │   │   ├── AppError.js
 │   │   └── catchAsync.js
-│   ├── validators/
-│   │   └── todo.validator.js
-│   ├── app.js
-│   └── server.js
+│   └── validators/
+│       └── todo.validator.js
 ├── tests/
 │   ├── auth.test.js
 │   ├── setup.js
@@ -103,92 +102,72 @@ todo-api/
 ├── .gitignore
 ├── jest.config.js
 ├── package.json
+├── package-lock.json
 └── README.md
 ```
 
-## Persyaratan
-
-Sebelum menjalankan project, pastikan perangkat sudah memiliki:
-
-- Node.js versi 18 atau lebih baru.
-- npm (terpasang bersama Node.js).
-- MongoDB lokal atau akun MongoDB Atlas.
-- Git (opsional, jika project akan di-clone dari repository).
-
-Project dapat dikembangkan di Windows, Linux, maupun macOS selama Node.js dan MongoDB tersedia.
-
 ## Instalasi
 
-### 1. Masuk ke folder project
+### Prasyarat
 
-Jika project sudah tersedia di komputer:
+Pastikan perangkat sudah memiliki:
 
-```bash
-cd todo-api
-```
+- [Node.js](https://nodejs.org/) versi 20 atau lebih baru.
+- [MongoDB](https://www.mongodb.com/) atau akun MongoDB Atlas.
+- Git (opsional, jika mengambil project melalui repository).
 
-Atau clone repository (ganti URL berikut dengan URL repository milikmu):
+### Langkah instalasi
 
-```bash
-git clone https://github.com/hafizhsyakir1507-del/todo-api
-cd todo-api
-```
+1. Clone repository atau unduh project, kemudian masuk ke folder project.
 
-### 2. Install dependencies
+   ```bash
+   git clone https://github.com/hafizhsyakir1507-del/todo-api.git
+   cd todo-api
+   ```
 
-```bash
-npm install
-```
+   Jika project sudah diunduh dalam bentuk ZIP, ekstrak ZIP lalu buka folder `todo-api` melalui terminal.
 
-### 3. Buat file environment
+2. Install seluruh dependency.
 
-Buat file bernama `.env` di direktori utama project, sejajar dengan `package.json`. Isi file tersebut mengikuti contoh pada bagian [Environment Variables](#environment-variables).
+   ```bash
+   npm install
+   ```
 
-> File `.env` tidak disertakan dalam repository. Jangan mengunggah file ini karena berisi konfigurasi dan secret aplikasi.
+3. Buat file `.env` di folder utama project dan isi variabel sesuai bagian [Environment Variables](#environment-variables).
 
 ## Environment Variables
 
-Aplikasi membaca konfigurasi dari file `.env` melalui package `dotenv`.
+Aplikasi membutuhkan file `.env` di direktori utama project. Buat file tersebut secara manual dan jangan mengunggahnya ke repository publik karena berisi konfigurasi dan secret aplikasi.
 
-Contoh isi `.env` untuk pengembangan lokal:
+Contoh isi `.env`:
 
 ```env
 PORT=3000
-MONGODB_URI=mongodb://127.0.0.1:27017/todo_api_db
-NODE_ENV=development
-JWT_SECRET=ganti_dengan_secret_acak_yang_panjang
+MONGODB_URI=mongodb://127.0.0.1:27017/todo_api
+JWT_SECRET=isi_dengan_secret_acak_yang_aman
 JWT_EXPIRES_IN=1d
-EXTERNAL_API_KEY=ganti_dengan_api_key_acak
+EXTERNAL_API_KEY=isi_dengan_api_key_acak
+NODE_ENV=development
 ```
 
-| Variable | Wajib | Contoh Nilai | Keterangan |
-| --- | --- | --- | --- |
-| `PORT` | Tidak | `3000` | Port server. Default aplikasi adalah `3000`. |
-| `MONGODB_URI` | Ya | `mongodb://127.0.0.1:27017/todo_api_db` | Connection string MongoDB. |
-| `NODE_ENV` | Tidak | `development` | Menandai environment aplikasi. Saat bernilai `development`, stack trace error disertakan pada response. |
-| `JWT_SECRET` | Ya | Secret acak yang panjang | Secret untuk menandatangani dan memverifikasi JWT. |
-| `JWT_EXPIRES_IN` | Disarankan | `1d` | Masa berlaku token JWT, menggunakan format waktu yang didukung `jsonwebtoken`. |
-| `EXTERNAL_API_KEY` | Ya untuk endpoint statistik | API key acak | Kunci yang diperiksa pada header `x-api-key` untuk endpoint statistik. |
+| Variabel | Wajib | Keterangan |
+|---|---|---|
+| `PORT` | Tidak | Port server. Default aplikasi adalah `3000`. |
+| `MONGODB_URI` | Ya | URI koneksi MongoDB. |
+| `JWT_SECRET` | Ya | Secret untuk menandatangani dan memverifikasi JWT. |
+| `JWT_EXPIRES_IN` | Disarankan | Masa berlaku token JWT, misalnya `1d` atau `7d`. |
+| `EXTERNAL_API_KEY` | Ya untuk endpoint statistik | API Key yang dikirim melalui header `x-api-key`. |
+| `NODE_ENV` | Tidak | Penanda environment aplikasi, misalnya `development` atau `production`. |
 
-Gunakan nilai secret yang berbeda untuk setiap environment. Jangan menggunakan contoh secret di atas sebagai secret sungguhan dan jangan membagikan nilai `.env`.
+**Catatan:**
+- Ganti nilai contoh `JWT_SECRET` dan `EXTERNAL_API_KEY` dengan nilai acak milik masing-masing pengguna.
+- Jangan menggunakan nilai contoh di atas sebagai secret produksi.
+- Jika menggunakan MongoDB Atlas, gunakan connection string dari cluster milik sendiri.
+- Jangan membagikan file `.env` atau memasukkannya ke Git.
 
-### Memahami NODE_ENV
+## Menjalankan Aplikasi
 
-`NODE_ENV` digunakan untuk menandai lingkungan tempat aplikasi berjalan.
-
-| Nilai | Kegunaan |
-| --- | --- |
-| `development` | Pengembangan lokal. Middleware error menyertakan stack trace pada response untuk membantu proses debugging. |
-| `test` | Penanda environment testing. Konfigurasi test project menggunakan `mongodb-memory-server` agar test berjalan dengan database sementara. |
-| `production` | Environment aplikasi yang sudah dijalankan untuk pengguna. Stack trace tidak disertakan dalam response. |
-
-Pada kode project saat ini, `NODE_ENV` juga ditampilkan pada log saat server mulai berjalan. Script `npm test` menjalankan Jest dan setup test membuat MongoDB sementara; jika ingin menetapkan `NODE_ENV=test` secara eksplisit, atur environment tersebut pada terminal atau konfigurasi test.
-
-Untuk deployment, isi environment variables melalui dashboard platform hosting atau pengelola environment server. Gunakan database dan secret khusus production, serta jangan mengunggah file `.env` ke repository.
-
-## Menjalankan Project
-
-Pastikan MongoDB sudah aktif dan konfigurasi `.env` sudah benar.
+Jalankan perintah berikut dari folder utama project.
 
 ### Mode development
 
@@ -196,63 +175,41 @@ Pastikan MongoDB sudah aktif dan konfigurasi `.env` sudah benar.
 npm run dev
 ```
 
-Nodemon akan menjalankan ulang server ketika ada perubahan file yang dipantau.
+Perintah ini menjalankan server menggunakan Nodemon sehingga server dapat dimulai ulang ketika ada perubahan file.
 
-### Mode normal
+### Mode production
 
 ```bash
 npm start
 ```
 
-Jika server berhasil dijalankan, alamat default API adalah:
+Jika koneksi database berhasil, server akan berjalan pada:
 
 ```text
 http://localhost:3000
 ```
 
-Endpoint pemeriksaan sederhana:
-
-```http
-GET http://localhost:3000/
-```
-
-Response:
-
-```json
-{
-  "message": "Todo API is running!"
-}
-```
-
-Jika menggunakan nilai `PORT` selain `3000`, sesuaikan alamat dengan port tersebut.
-
-## Menjalankan Test
-
-Jalankan seluruh automated test dengan perintah:
-
-```bash
-npm test
-```
-
-Project menggunakan:
-
-- **Jest** sebagai test runner.
-- **Supertest** untuk menguji HTTP request dan response.
-- **mongodb-memory-server** untuk menyediakan MongoDB sementara selama pengujian.
-
-Dengan database sementara tersebut, pengujian tidak perlu menggunakan database development utama. Pastikan perangkat dapat mengunduh binary MongoDB yang dibutuhkan `mongodb-memory-server` saat pertama kali dijalankan.
+Port dapat berbeda jika variabel `PORT` di file `.env` diubah.
 
 ## Dokumentasi API
 
-Dokumentasi interaktif Swagger UI tersedia setelah server berhasil berjalan:
+Dokumentasi interaktif tersedia melalui Swagger UI. Pastikan server sudah berjalan, lalu buka:
 
 ```text
 http://localhost:3000/api-docs
 ```
 
-Swagger UI menyediakan informasi endpoint dan skema request yang didokumentasikan pada route project. Untuk endpoint yang memerlukan autentikasi, gunakan tombol **Authorize** dan masukkan token JWT dengan format Bearer sesuai petunjuk Swagger.
+Swagger UI dapat digunakan untuk melihat dokumentasi endpoint dan mencoba request API secara langsung.
 
-## Referensi Endpoint
+Untuk endpoint yang membutuhkan autentikasi:
+1. Lakukan registrasi melalui `POST /api/auth/register` atau login melalui `POST /api/auth/login`.
+2. Salin JWT token dari response.
+3. Masukkan token melalui fitur **Authorize** di Swagger UI dengan format Bearer Token.
+4. Jalankan endpoint yang membutuhkan autentikasi.
+
+Untuk endpoint statistik, masukkan API Key pada header `x-api-key`.
+
+## Ringkasan Endpoint
 
 Base URL lokal:
 
@@ -260,14 +217,66 @@ Base URL lokal:
 http://localhost:3000
 ```
 
-### Authentication
+| Method | Endpoint | Akses | Keterangan |
+|---|---|---|---|
+| `GET` | `/` | Publik | Memeriksa status server |
+| `POST` | `/api/auth/register` | Publik | Registrasi pengguna baru |
+| `POST` | `/api/auth/login` | Publik | Login dan mendapatkan JWT |
+| `GET` | `/api/todos` | JWT | Mengambil daftar todo |
+| `POST` | `/api/todos` | JWT | Membuat todo baru |
+| `GET` | `/api/todos/:id` | JWT | Mengambil detail todo berdasarkan ID |
+| `PUT` | `/api/todos/:id` | JWT | Memperbarui todo berdasarkan ID |
+| `DELETE` | `/api/todos/:id` | JWT | Menghapus todo berdasarkan ID |
+| `GET` | `/api/activity-logs` | JWT | Mengambil riwayat aktivitas pengguna |
+| `GET` | `/api/stats/summary` | API Key | Mengambil ringkasan statistik todo |
 
-| Method | Endpoint | Autentikasi | Keterangan |
-| --- | --- | --- | --- |
-| `POST` | `/api/auth/register` | Tidak | Registrasi pengguna baru. |
-| `POST` | `/api/auth/login` | Tidak | Login dan memperoleh JWT. |
+**Keterangan akses:**
+- `Publik`: endpoint dapat diakses tanpa token.
+- `JWT`: endpoint membutuhkan token pada header `Authorization`.
+- `API Key`: endpoint membutuhkan API Key pada header `x-api-key`.
 
-Contoh body registrasi:
+Token JWT dikirim dengan format:
+
+```http
+Authorization: Bearer <token>
+```
+
+## Parameter Todo
+
+Endpoint `GET /api/todos` mendukung parameter query berikut.
+
+| Parameter | Keterangan | Contoh |
+|---|---|---|
+| `page` | Nomor halaman, minimal `1` (default `1`) | `page=2` |
+| `limit` | Jumlah data per halaman, antara `1` sampai `100` (default `10`) | `limit=5` |
+| `completed` | Filter status todo (`true` atau `false`) | `completed=false` |
+| `sortBy` | Field pengurutan: `createdAt`, `title`, atau `completed` | `sortBy=title` |
+| `order` | Urutan pengurutan: `asc` atau `desc` | `order=asc` |
+| `search` | Pencarian pada judul dan deskripsi | `search=belajar` |
+
+Contoh penggunaan parameter secara bersamaan:
+
+```http
+GET /api/todos?completed=false&sortBy=createdAt&order=desc&page=1&limit=10
+```
+
+Endpoint `GET /api/activity-logs` juga mendukung pagination:
+
+| Parameter | Keterangan | Default |
+|---|---|---|
+| `page` | Nomor halaman | `1` |
+| `limit` | Jumlah data per halaman | `10` |
+
+## Contoh Penggunaan
+
+### 1. Registrasi pengguna
+
+**Request**
+
+```http
+POST /api/auth/register
+Content-Type: application/json
+```
 
 ```json
 {
@@ -277,91 +286,165 @@ Contoh body registrasi:
 }
 ```
 
-### Todos
+### 2. Login
 
-Semua endpoint Todo memerlukan JWT melalui header `Authorization: Bearer <token>`.
-
-| Method | Endpoint | Keterangan |
-| --- | --- | --- |
-| `POST` | `/api/todos` | Membuat Todo baru. |
-| `GET` | `/api/todos` | Mengambil daftar Todo dengan pagination. |
-| `GET` | `/api/todos/:id` | Mengambil detail Todo berdasarkan ID. |
-| `PUT` | `/api/todos/:id` | Memperbarui Todo. |
-| `DELETE` | `/api/todos/:id` | Menghapus Todo. |
-
-Parameter query yang tersedia pada daftar Todo:
-
-| Parameter | Contoh | Keterangan |
-| --- | --- | --- |
-| `page` | `1` | Nomor halaman. |
-| `limit` | `10` | Jumlah item per halaman (maksimal 100). |
-| `completed` | `true` atau `false` | Filter status Todo. |
-| `sortBy` | `createdAt` | Field pengurutan: `createdAt`, `title`, atau `completed`. |
-| `order` | `desc` | Urutan: `asc` atau `desc`. |
-| `search` | `belajar` | Kata pencarian pada judul atau deskripsi. |
-
-Contoh:
+**Request**
 
 ```http
-GET /api/todos?page=1&limit=10&completed=false&sortBy=createdAt&order=desc
-Authorization: Bearer <token>
+POST /api/auth/login
+Content-Type: application/json
 ```
 
-Contoh body untuk membuat Todo:
+```json
+{
+  "email": "budi@example.com",
+  "password": "rahasia123"
+}
+```
+
+Response login berisi JWT token yang digunakan untuk mengakses endpoint yang membutuhkan autentikasi.
+
+### 3. Membuat todo
+
+**Request**
+
+```http
+POST /api/todos
+Authorization: Bearer <token>
+Content-Type: application/json
+```
 
 ```json
 {
   "title": "Belajar Node.js",
-  "description": "Mempelajari REST API menggunakan Express"
+  "description": "Mempelajari pembuatan REST API"
 }
 ```
 
-### Activity Logs
+### 4. Mengambil daftar todo
 
-| Method | Endpoint | Autentikasi | Keterangan |
-| --- | --- | --- | --- |
-| `GET` | `/api/activity-logs` | JWT | Mengambil riwayat aktivitas pengguna yang sedang login. |
+**Request**
 
-Endpoint ini menerima parameter pagination `page` dan `limit`.
+```http
+GET /api/todos?page=1&limit=10&completed=false
+Authorization: Bearer <token>
+```
 
-Contoh:
+### 5. Memperbarui todo
+
+**Request**
+
+```http
+PUT /api/todos/<TODO_ID>
+Authorization: Bearer <token>
+Content-Type: application/json
+```
+
+```json
+{
+  "title": "Belajar Express.js",
+  "description": "Mempelajari middleware dan routing",
+  "completed": true
+}
+```
+
+### 6. Menghapus todo
+
+**Request**
+
+```http
+DELETE /api/todos/<TODO_ID>
+Authorization: Bearer <token>
+```
+
+### 7. Mengambil activity logs
+
+**Request**
 
 ```http
 GET /api/activity-logs?page=1&limit=10
 Authorization: Bearer <token>
 ```
 
-### Statistics
+Endpoint ini menampilkan riwayat aktivitas milik pengguna yang sedang login.
 
-| Method | Endpoint | Autentikasi | Keterangan |
-| --- | --- | --- | --- |
-| `GET` | `/api/stats/summary` | API Key | Mengambil ringkasan statistik Todo dan aktivitas. |
+### 8. Mengambil statistik
 
-Kirim API Key melalui header `x-api-key`:
+**Request**
 
 ```http
 GET /api/stats/summary
 x-api-key: <EXTERNAL_API_KEY>
 ```
 
-Endpoint statistik mengembalikan jumlah total Todo, Todo yang selesai, Todo yang belum selesai, dan total activity logs.
+Response berisi ringkasan jumlah todo, todo yang selesai, todo yang belum selesai, dan total activity logs.
 
-> Catatan: daftar endpoint di atas dirangkum dari route project. Dokumentasi Swagger di `/api-docs` menjadi referensi untuk detail skema request dan response yang tersedia.
+## Format Response dan Kode Status
 
-## Contoh Penggunaan
+Response sukses menggunakan properti `success: true`. Contoh bentuk response:
 
-Alur penggunaan API secara umum:
+```json
+{
+  "success": true,
+  "message": "Todo created successfully",
+  "data": {
+    "title": "Belajar Node.js",
+    "description": "Mempelajari pembuatan REST API",
+    "completed": false
+  }
+}
+```
 
-1. Daftarkan pengguna melalui `POST /api/auth/register`.
-2. Login melalui `POST /api/auth/login` untuk memperoleh JWT.
-3. Sertakan JWT pada header `Authorization: Bearer <token>` saat mengakses endpoint Todo dan Activity Logs.
-4. Gunakan endpoint Todo untuk membuat dan mengelola daftar tugas.
-5. Gunakan `GET /api/stats/summary` dengan API Key untuk memperoleh ringkasan statistik.
+Response error menggunakan properti `success: false` dan pesan error.
+
+| Kode Status | Arti | Keterangan |
+|---|---|---|
+| `200` | OK | Request berhasil diproses. |
+| `201` | Created | Data berhasil dibuat. |
+| `400` | Bad Request | Data request tidak valid. |
+| `401` | Unauthorized | Token atau API Key tidak ada/tidak valid. |
+| `403` | Forbidden | Pengguna tidak memiliki izin untuk mengakses data. |
+| `404` | Not Found | Endpoint atau data tidak ditemukan. |
+| `409` | Conflict | Terjadi konflik data, misalnya email sudah digunakan. |
+| `500` | Internal Server Error | Terjadi kesalahan pada server. |
+
+## Keamanan
+
+- Password pengguna di-hash menggunakan bcryptjs sebelum disimpan ke database.
+- Autentikasi menggunakan JWT.
+- Endpoint todo dan activity logs dilindungi middleware autentikasi.
+- Pengguna hanya dapat mengakses todo miliknya sendiri, sedangkan role admin memiliki akses pengelolaan yang lebih luas sesuai implementasi aplikasi.
+- Endpoint statistik dilindungi API Key melalui header `x-api-key`.
+- Validasi input dilakukan sebelum data diproses.
+- Secret aplikasi disimpan melalui environment variables dan tidak ditulis langsung ke source code.
+
+## Pengujian
+
+Project ini menggunakan **Jest**, **Supertest**, dan **mongodb-memory-server** untuk menjalankan pengujian otomatis.
+
+Jalankan seluruh test dengan perintah:
+
+```bash
+npm test
+```
+
+Pengujian menggunakan MongoDB in-memory sehingga test tidak perlu menggunakan database MongoDB utama yang dipakai aplikasi.
+
+File pengujian tersedia di folder `tests/`:
+
+| File | Cakupan |
+|---|---|
+| `auth.test.js` | Pengujian registrasi dan login |
+| `todo.test.js` | Pengujian operasi dan fitur todo |
+| `stats.test.js` | Pengujian endpoint statistik dan API Key |
+| `setup.js` | Setup dan pembersihan database pengujian |
+
+## Pembuat
+
+Dikembangkan oleh **[Nama Kamu]**.
+
+GitHub: [hafizhsyakir1507-del](https://github.com/hafizhsyakir1507-del/todo-api)
 
 ## Lisensi
 
-Project ini menggunakan lisensi **ISC**, sesuai dengan deklarasi `license` pada `package.json`.
-
----
-
-Dibuat untuk keperluan pembelajaran dan pengembangan backend Node.js.
+Project ini menggunakan lisensi **ISC**, sesuai informasi pada `package.json`.
