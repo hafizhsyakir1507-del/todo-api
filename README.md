@@ -130,7 +130,7 @@ cd todo-api
 Atau clone repository (ganti URL berikut dengan URL repository milikmu):
 
 ```bash
-git clone https://github.com/USERNAME/todo-api.git
+git clone https://github.com/hafizhsyakir1507-del/todo-api
 cd todo-api
 ```
 
