@@ -1,8 +1,17 @@
-const app = require('./app');
+require("dotenv").config();
 
-if (require.main === module) {
-  const PORT = process.env.PORT || 3000;
+const app = require("./app");
+const connectDB = require("./config/db");
+
+const PORT = process.env.PORT || 3000;
+
+async function startServer() {
+  await connectDB();
+
   app.listen(PORT, () => {
-    console.log(`✅ Server berjalan di port ${PORT}`);
+    console.log(`Server running on http://localhost:${PORT}`);
+    console.log(`Environment: ${process.env.NODE_ENV || "development"}`);
   });
 }
+
+startServer();
