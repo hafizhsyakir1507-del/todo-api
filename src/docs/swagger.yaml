@@ -1,0 +1,180 @@
+openapi: 3.0.0
+info:
+  title: Todo List API
+  version: 1.0.0
+  description: API untuk aplikasi Todo List dengan autentikasi JWT, pencatatan aktivitas, dan statistik
+servers:
+  - url: /api
+    description: API Server
+paths:
+  /auth/register:
+    post:
+      summary: Daftar akun baru
+      tags: [Autentikasi]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [name, email, password]
+              properties:
+                name:
+                  type: string
+                email:
+                  type: string
+                  format: email
+                password:
+                  type: string
+                  format: password
+      responses:
+        "201":
+          description: Registrasi berhasil
+  /auth/login:
+    post:
+      summary: Masuk / Login
+      tags: [Autentikasi]
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [email, password]
+              properties:
+                email:
+                  type: string
+                password:
+                  type: string
+      responses:
+        "200":
+          description: Login berhasil
+  /todos:
+    get:
+      summary: Ambil semua daftar tugas
+      tags: [Todos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+        - name: limit
+          in: query
+          schema:
+            type: integer
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: completed
+          in: query
+          schema:
+            type: boolean
+      responses:
+        "200":
+          description: Berhasil mengambil data
+    post:
+      summary: Buat tugas baru
+      tags: [Todos]
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [title]
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+      responses:
+        "201":
+          description: Tugas berhasil dibuat
+  /todos/{id}:
+    get:
+      summary: Ambil detail satu tugas
+      tags: [Todos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Berhasil
+    put:
+      summary: Ubah data tugas
+      tags: [Todos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                title:
+                  type: string
+                description:
+                  type: string
+                completed:
+                  type: boolean
+      responses:
+        "200":
+          description: Berhasil diperbarui
+    delete:
+      summary: Hapus tugas
+      tags: [Todos]
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Berhasil dihapus
+  /activity-logs:
+    get:
+      summary: Ambil riwayat aktivitas
+      tags: [Aktivitas]
+      security:
+        - bearerAuth: []
+      responses:
+        "200":
+          description: Berhasil
+  /stats/summary:
+    get:
+      summary: Ringkasan statistik
+      tags: [Statistik]
+      parameters:
+        - name: x-api-key
+          in: header
+          required: true
+          schema:
+            type: string
+      responses:
+        "200":
+          description: Berhasil
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT

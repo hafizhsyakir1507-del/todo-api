@@ -1,5 +1,7 @@
 const express = require("express");
 const swaggerUi = require("swagger-ui-express");
+const YAML = require('yamljs');
+const swaggerDocument = YAML.load("./src/docs/swagger.yaml");
 const swaggerSpec = require("./config/swagger");
 
 const todoRoutes = require("./routes/todo.routes");
@@ -19,6 +21,8 @@ app.use(express.json());
 app.get("/", (req, res) => {
   res.json({ message: "Todo API is running!" });
 });
+
+app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerSpec));
 app.use("/api/auth", authRoutes);
