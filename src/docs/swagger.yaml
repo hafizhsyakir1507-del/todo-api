@@ -5,7 +5,7 @@ info:
   description: API untuk aplikasi Todo List dengan autentikasi JWT, pencatatan aktivitas, dan statistik
 servers:
   - url: /api
-    description: API Server
+  description: API Server
 paths:
   /auth/register:
     post:
