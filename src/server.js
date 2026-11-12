@@ -6,5 +6,3 @@ if (require.main === module) {
     console.log(`✅ Server berjalan di port ${PORT}`);
   });
 }
-
-module.exports = app;
