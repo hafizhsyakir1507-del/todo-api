@@ -441,7 +441,7 @@ File pengujian tersedia di folder `tests/`:
 
 ## Pembuat
 
-Dikembangkan oleh **[Nama Kamu]**.
+Dikembangkan oleh **MUHAMMAD HAFIZH SYAKIR AUZAN**.
 
 GitHub: [hafizhsyakir1507-del](https://github.com/hafizhsyakir1507-del/todo-api)
 
