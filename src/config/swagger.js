@@ -10,8 +10,8 @@ const options = {
     },
     servers: [
       {
-        url: process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : (process.env.API_BASE_URL || "http://localhost:3000"),
-        description: "Local development server",
+        url: "/",
+        description: "Current server",
       },
     ],
     components: {
